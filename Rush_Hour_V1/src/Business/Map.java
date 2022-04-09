@@ -12,7 +12,7 @@ import java.util.ArrayList;
  * @author johel
  */
 
-public class Map {
+public class Map{
     public int anchuraMap;
     public int alturaMap;
     private ArrayList<ArrayList<Node>> map;
@@ -155,4 +155,5 @@ public class Map {
         crearMap();
         establecerBordesMap();
     }
+
 }
