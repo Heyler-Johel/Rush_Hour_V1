@@ -4,6 +4,7 @@ public class Vehicle {
     private int id;
     private boolean horizontal;
     private String color;
+    private boolean isObstacle;
 
     public Vehicle(int pId, boolean pHorizontal, String pColor){
         this.id = pId;
