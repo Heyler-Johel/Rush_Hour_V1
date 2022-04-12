@@ -1,4 +1,4 @@
-package Heuristic;
+package AStar;
 
 import AStar.State;
 import AStar.Map;

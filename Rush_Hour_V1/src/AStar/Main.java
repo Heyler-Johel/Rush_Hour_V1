@@ -6,7 +6,6 @@
 package AStar;
 
 import static AStar.AStar.searchAStar;
-import Heuristic.Heuristic;
 import java.util.LinkedList;
 
 /**
