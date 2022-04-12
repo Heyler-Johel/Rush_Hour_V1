@@ -5,6 +5,7 @@
  */
 package Memento;
 
+import Business.Map;
 import java.util.ArrayList;
 
 /**
@@ -15,6 +16,8 @@ public class Caretaker {
     
     private final ArrayList<Memento> states = new ArrayList<>();
     
+    public Caretaker (){}
+    
     public void addMemento(Memento memento){
         states.add(memento);
     }
@@ -22,4 +25,5 @@ public class Caretaker {
     public Memento getMemento(int index){
         return states.get(index);
     }
+   
 }

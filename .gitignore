@@ -25,3 +25,5 @@ hs_err_pid*
 /Rush_Hour_V1/build/
 *.xml
 *.mf
+/Rush_Hour_Example/nbproject/private/
+/Rush_Hour_Example/build/
