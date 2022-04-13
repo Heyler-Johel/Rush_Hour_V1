@@ -3,16 +3,16 @@ package AStar;
 public class Vehicle implements IPrototype<Vehicle> {
 
     	public int x, y, size;
-	String orientation;
+	boolean horizontal;
         public String color;
 	
-	public Vehicle(int x, int y, String orientation, int size, String color) {
-		super();
-		this.x = x;
-		this.y = y;
-		this.size = size;
-		this.orientation = orientation;
-                this.color = color;
+	public Vehicle(int x, int y, boolean horizontal, int size, String color) {
+            super();
+            this.x = x;
+            this.y = y;
+            this.size = size;
+            this.horizontal = horizontal;
+            this.color = color;
 	}
 	
 	public void moveDown() {
@@ -32,17 +32,17 @@ public class Vehicle implements IPrototype<Vehicle> {
 	}
 
 	public boolean isHorizontal() {
-		return orientation.equals("h");
+		return horizontal;
 	}
 
 	public boolean isVertical() {
-		return orientation.equals("v");
+		return !horizontal;
 	}
 	
     @Override
     public Vehicle clone(){
 
-            return new Vehicle(this.x, this.y, this.orientation, this.size, this.color);
+            return new Vehicle(this.x, this.y, this.horizontal, this.size, this.color);
     }
 
     @Override

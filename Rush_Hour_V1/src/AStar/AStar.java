@@ -3,34 +3,32 @@ package AStar;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.PriorityQueue;
-import java.util.Scanner;
 
 public class AStar {
-    private static PriorityQueue<State> pq = new PriorityQueue<>(10, (State o1, State o2) -> o1.cost - o2.cost);;
-    
+    private static final PriorityQueue<State> open = new PriorityQueue<>(10, (State o1, State o2) -> o1.cost - o2.cost);
+    private static final HashMap<String, Boolean> close = new HashMap<>();
     
     public static LinkedList<State> searchAStar(Map map, Heuristic heuristic){
         
         HashMap<State, State> predecessor = new HashMap<>();
-        HashMap<String, Boolean> visited = new HashMap<>();
         State src = new State(map);
         State goal = null;
         src.setCost(0);
-        pq.add(src);
-        visited.put(src.toString(), true);
-        while(!pq.isEmpty()){
-            State u = pq.poll();
+        open.add(src);
+        close.put(src.toString(), true);
+        while(!open.isEmpty()){
+            State u = open.poll();
             if(u.isGoal()){
                 goal = u;
                 break;
             }
             u.getNeighbors().forEach((v) -> {
                 int cost = u.cost + 1 + heuristic.getValue(v);
-                if (!contains(visited, v)) {
+                if (!contains(close, v)) {
                     v.setCost(cost);
-                    pq.add(v);
+                    open.add(v);
                     predecessor.put(v, u);
-                    visited.put(v.toString(), true);
+                    close.put(v.toString(), true);
                 }
             });
         }
@@ -39,7 +37,7 @@ public class AStar {
     };
     
     
-    private static boolean contains(HashMap<String, Boolean> visited, State v) {
+    private static boolean contains(HashMap<String, Boolean> visited, State v){
         return visited.containsKey(v.toString());
     }
 

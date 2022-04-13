@@ -21,21 +21,21 @@ public class Heuristic {
     public Heuristic() {
     }
 public int getValue(State state) {
-		Vehicle redvehicle = state.map.getRedVehicle();
-		int gridSize = state.map.gridSize;
-		int numberOfMovements = 0;
-		for (int i = redvehicle.y+2; i < gridSize; i++) {
-			int x = redvehicle.x;
-			int y = i;
-			if(state.map.crashVehicles(x, y)){
-				Vehicle vehicle = state.map.crashedVehicle; 
-				if(!state.map.canMoveDown(vehicle) && !state.map.canMoveUp(vehicle))
-					numberOfMovements += 2;
-				else
-					numberOfMovements ++;
-			}
-		}
-		return numberOfMovements;
-	}
+        Vehicle redvehicle = state.map.getRedVehicle();
+        int gridSize = state.map.gridSize;
+        int numberOfMovements = 0;
+        for (int i = redvehicle.y+2; i < gridSize; i++) {
+            int x = redvehicle.x;
+            int y = i;
+            if(state.map.crashVehicles(x, y)){
+                Vehicle vehicle = state.map.crashedVehicle; 
+                if(!state.map.canMoveDown(vehicle) && !state.map.canMoveUp(vehicle))
+                    numberOfMovements += 2;
+                else
+                    numberOfMovements ++;
+            }
+        }
+        return numberOfMovements;
+    }
 
 }

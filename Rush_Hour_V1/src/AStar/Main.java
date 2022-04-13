@@ -25,12 +25,12 @@ public class Main {
 //              {'+', '.', '.', '.', '+', '.'},
 //              {'#', '#', '#', '.', '+', '.'} };
         char[][] grid = 
-            { {'.', '.', '.', '<', '-', '>'},
-              {'.', '.', '˄', '.', '.', '.'},
-              {'<', '>', '|', '.', '.', '.'},
-              {'<', '>', '˅', '.', '˄', '˄'},
-              {'˄', '.', '.', '.', '˅', '|'},
-              {'˅', '.', '<', '-', '>', '˅'} };
+            { {'.', '˄', '.', '.', '.', '˄'},
+              {'.', '˅', '<', '-', '>', '˅'},
+              {'<', '>', '˄', '.', '.', '˄'},
+              {'.', '.', '˅', '.', '.', '|'},
+              {'˄', '<', '>', '.', '.', '˅'},
+              {'˅', '.', '.', '.', '<', '>'} };
         
         int i = 0, j = 0;
         while (i < grid.length && j < grid.length){
@@ -43,9 +43,9 @@ public class Main {
                     }
                     int jOrigin = j-(sizev-1);
                     if (i == 2 && jOrigin == 0)
-                        vehicles.addFirst(new Vehicle(i, jOrigin, "h", 2, "Rojo"));
+                        vehicles.addFirst(new Vehicle(i, jOrigin, true, 2, "Rojo"));
                     else
-                        vehicles.add(new Vehicle(i, jOrigin, "h", sizev, "Verde"));
+                        vehicles.add(new Vehicle(i, jOrigin, true, sizev, "Verde"));
                     j++;
                     break;
                 case '˄':
@@ -54,7 +54,7 @@ public class Main {
                         i++;
                     }
                     i = i-(sizev-1);
-                    vehicles.add(new Vehicle(i, j, "v", sizev, "Azul")); 
+                    vehicles.add(new Vehicle(i, j, false, sizev, "Azul")); 
                     j++;
                     break;
                 default:
