@@ -6,13 +6,30 @@ public final class Map{
         public int gridSize;
 	public LinkedList<Vehicle> vehicles;
 	public Vehicle crashedVehicle;
+        public int goalx;
+        public int goaly;
 
-	public Map(int gridSize, LinkedList<Vehicle> vehicles) {
+	public Map(int gridSize, LinkedList<Vehicle> vehicles, int[] goalPoint) {
 		super();
 		this.gridSize = gridSize;
 		this.vehicles = vehicles;
+                this.goalx = goalPoint[0];
+                this.goaly = goalPoint[1];
+                valideGoal();
 	}
 	
+        private void valideGoal(){
+            if (this.getRedVehicle().horizontal){
+                if (this.goalx != this.getRedVehicle().x)
+                    this.goalx = this.getRedVehicle().x;
+            }
+            else{
+                if (this.goaly != this.getRedVehicle().y)
+                    this.goaly = this.getRedVehicle().y;
+            }
+        }
+        
+        
 	public Vehicle getRedVehicle(){
 		return vehicles.get(0);
 	}
@@ -42,20 +59,20 @@ public final class Map{
 	}
 	
 	public boolean crashVehicles(int x, int y) {
-		for(Vehicle vehicle : vehicles){
-			if(vehicle.isHorizontal()){
-				if(x == vehicle.x && y >= vehicle.y && y < vehicle.y + vehicle.size){
-					crashedVehicle = vehicle;
-					return true;
-				}
-			}
-			else if(vehicle.isVertical()){
-				if(y == vehicle.y && x >= vehicle.x && x < vehicle.x + vehicle.size){
-					crashedVehicle = vehicle;
-					return true;
-				}
-			}
-		}
-		return false;
+            for(Vehicle vehicle : vehicles){
+                if(vehicle.isHorizontal()){
+                        if(x == vehicle.x && y >= vehicle.y && y < vehicle.y + vehicle.size){
+                                crashedVehicle = vehicle;
+                                return true;
+                        }
+                }
+                else if(vehicle.isVertical()){
+                        if(y == vehicle.y && x >= vehicle.x && x < vehicle.x + vehicle.size){
+                                crashedVehicle = vehicle;
+                                return true;
+                        }
+                }
+            }
+            return false;
 	}
 }

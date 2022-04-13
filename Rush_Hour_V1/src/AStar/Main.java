@@ -54,6 +54,9 @@ public class Main {
                         i++;
                     }
                     i = i-(sizev-1);
+//                    if (i == 0 && j == 1)
+//                        vehicles.addFirst(new Vehicle(i, j, false, 2, "Rojo"));
+//                    else
                     vehicles.add(new Vehicle(i, j, false, sizev, "Azul")); 
                     j++;
                     break;
@@ -69,7 +72,8 @@ public class Main {
             }
         };
         
-       return new Map(size, vehicles);
+       int[] point = {2, 4};
+       return new Map(size, vehicles, point);
     }
         	private static void print(LinkedList<State> path) {
 		System.out.println("Number of optimal movements = " + (path.size()-1) + "\n");

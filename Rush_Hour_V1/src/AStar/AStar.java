@@ -14,6 +14,7 @@ public class AStar {
         State src = new State(map);
         State goal = null;
         src.setCost(0);
+        src.cantMov = 0;
         open.add(src);
         close.put(src.toString(), true);
         while(!open.isEmpty()){
@@ -23,8 +24,9 @@ public class AStar {
                 break;
             }
             u.getNeighbors().forEach((v) -> {
-                int cost = u.cost + 1 + heuristic.getValue(v);
-                if (!contains(close, v)) {
+                v.cantMov = u.cantMov + 1;
+                int cost = u.cantMov + heuristic.getValue(v);
+                if (!contains(close, v)) {    
                     v.setCost(cost);
                     open.add(v);
                     predecessor.put(v, u);

@@ -6,6 +6,7 @@ import java.util.LinkedList;
 public class State implements IPrototype<State>{
 	
 	public Map map;
+        public int cantMov;
 	int cost;
 	
 	
@@ -17,6 +18,7 @@ public class State implements IPrototype<State>{
 	public ArrayList<State> getNeighbors(){
 		ArrayList<State> neighbors = new ArrayList<>();
 		LinkedList<Vehicle> vehicles = this.map.vehicles; 
+                int [] goalPoint = {this.map.goalx, this.map.goaly};
 		for (int i = 0; i < vehicles.size(); i++) {
 			Vehicle vehicle = vehicles.get(i);
 			if(vehicle.isVertical()){
@@ -24,7 +26,8 @@ public class State implements IPrototype<State>{
 				Vehicle newvehicle = newvehicles.get(i);
 				while(map.canMoveDown(newvehicle)){
 					newvehicle.moveDown();
-					neighbors.add(new State(new Map(this.map.gridSize, newvehicles)));
+
+					neighbors.add(new State(new Map(this.map.gridSize, newvehicles, goalPoint)));
 					newvehicles = cloneVehicles(newvehicles);
 					newvehicle = newvehicles.get(i);
 				}
@@ -32,7 +35,7 @@ public class State implements IPrototype<State>{
 				newvehicle = newvehicles.get(i);
 				while(map.canMoveUp(newvehicle)){
 					newvehicle.moveUp();
-					neighbors.add(new State(new Map(this.map.gridSize, newvehicles)));
+					neighbors.add(new State(new Map(this.map.gridSize, newvehicles, goalPoint)));
 					newvehicles = cloneVehicles(newvehicles);
 					newvehicle = newvehicles.get(i);
 				}
@@ -42,7 +45,7 @@ public class State implements IPrototype<State>{
 				Vehicle newvehicle = newvehicles.get(i);
 				while(map.canMoveRight(newvehicle)){
 					newvehicle.moveRight();
-					neighbors.add(new State(new Map(this.map.gridSize, newvehicles)));
+					neighbors.add(new State(new Map(this.map.gridSize, newvehicles, goalPoint)));
 					newvehicles = cloneVehicles(newvehicles);
 					newvehicle = newvehicles.get(i);
 				}
@@ -50,7 +53,7 @@ public class State implements IPrototype<State>{
 				newvehicle = newvehicles.get(i);
 				while(map.canMoveLeft(newvehicle)){
 					newvehicle.moveLeft();
-					neighbors.add(new State(new Map(this.map.gridSize, newvehicles)));
+					neighbors.add(new State(new Map(this.map.gridSize, newvehicles, goalPoint)));
 					newvehicles = cloneVehicles(newvehicles);
 					newvehicle = newvehicles.get(i);
 				}
@@ -70,7 +73,11 @@ public class State implements IPrototype<State>{
 
 
 	public boolean isGoal(){
-		return map.getRedVehicle().y == map.gridSize - 2;
+              return map.getRedVehicle().y == map.goaly && map.getRedVehicle().x == map.goalx;
+//            if (map.getRedVehicle().horizontal)
+//                return map.getRedVehicle().y == map.gridSize - 2;
+//            else
+//                return map.getRedVehicle().x == map.gridSize - 2;
 	}
 	
 	public void print(){
