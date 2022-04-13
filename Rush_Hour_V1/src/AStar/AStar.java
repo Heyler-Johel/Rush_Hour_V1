@@ -8,13 +8,13 @@ public class AStar {
     private static final PriorityQueue<State> open = new PriorityQueue<>(10, (State o1, State o2) -> o1.cost - o2.cost);
     private static final HashMap<String, Boolean> close = new HashMap<>();
     
-    public static LinkedList<State> searchAStar(Map map, Heuristic heuristic){
-        
+    public static LinkedList<State> searchPath(Map map){
+        Heuristic heuristic = new Heuristic();
         HashMap<State, State> predecessor = new HashMap<>();
         State src = new State(map);
         State goal = null;
-        src.setCost(0);
-        src.cantMov = 0;
+        src.cost = 0;
+        src.steps = 0;
         open.add(src);
         close.put(src.toString(), true);
         while(!open.isEmpty()){
@@ -24,10 +24,10 @@ public class AStar {
                 break;
             }
             u.getNeighbors().forEach((v) -> {
-                v.cantMov = u.cantMov + 1;
-                int cost = u.cantMov + heuristic.getValue(v);
-                if (!contains(close, v)) {    
-                    v.setCost(cost);
+                int cost = u.steps + heuristic.getValue(v);
+                if (!contains(close, v)) { 
+                    v.steps = u.steps + 1;
+                    v.cost = cost;
                     open.add(v);
                     predecessor.put(v, u);
                     close.put(v.toString(), true);

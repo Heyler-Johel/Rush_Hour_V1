@@ -16,7 +16,7 @@ public class Path {
         addFirstState(u.clone());
         while(pred.get(u) != null){
             State parent = pred.get(u);
-            path.addFirst(parent.clone());
+            addFirstState(parent.clone());
             u = parent;
         }
         return path;
