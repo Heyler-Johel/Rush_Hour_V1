@@ -37,7 +37,7 @@ public final class Map{
         if (x > gridSize-size || y > gridSize-size || x<0 || y<0){
             return false;
         }
-        return !crashVehicles(x, y, size);
+        return !crashVehicles(newvehicle);
     }
 
 
@@ -69,24 +69,27 @@ public final class Map{
             return false;
     }
 	
-    public boolean crashVehicles(int x, int y, int size) {
+    public boolean crashVehicles(Vehicle v) {
+        int x = v.x;
+        int y = v.y;
+        int size = v.size;
         for(Vehicle vehicle : vehicles){
             if(vehicle.isHorizontal()){
-                if(x == vehicle.x && y >= vehicle.y && y < vehicle.y + vehicle.size){
-                        crashedVehicle = vehicle;
-                        return true;
-                }
-                else if(x >= vehicle.x + size && y >= vehicle.y && y < vehicle.y + vehicle.size){
+                if(v.horizontal && x == vehicle.x && (y >= vehicle.y && y < vehicle.y + vehicle.size || vehicle.y >= y && vehicle.y < y+size)){
+                    crashedVehicle = vehicle;
+                    return true;
+                }else if(!v.isHorizontal() && vehicle.x < x && x < vehicle.x + size && y >= vehicle.y && y < vehicle.y + vehicle.size){
                     crashedVehicle = vehicle;
                     return true;
                 }
             }
-            else if(vehicle.isVertical()){
-                if(y == vehicle.y && x >= vehicle.x && x < vehicle.x + vehicle.size){
+            else{
+                if(!v.horizontal && y == vehicle.y && (x >= vehicle.x && x < vehicle.x + vehicle.size
+                        || vehicle.x >= x && vehicle.x < x+size)){
                     crashedVehicle = vehicle;
                     return true;
                 }
-                else if(y > vehicle.y - size && y < vehicle.y + size && x >= vehicle.x && x < vehicle.x + vehicle.size){
+                else if(v.horizontal && y <= vehicle.y && vehicle.y < y+size && (x >= vehicle.x && x < vehicle.x + vehicle.size)){
                     crashedVehicle = vehicle;
                     return true;
                 }

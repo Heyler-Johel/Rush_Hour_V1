@@ -77,7 +77,7 @@ public class Main {
         };
         
         int[] point = {4, 0};
-        Vehicle newV = new Vehicle(4, 0, true, 2, "Rojo");
+        Vehicle newV = new Vehicle(0, 0, false, 2, "Rojo");
         //vehicles.add(newV);
         Map map = new Map(size, vehicles, point);
         System.out.print(map.valideVehicle(newV));
