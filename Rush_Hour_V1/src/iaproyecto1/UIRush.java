@@ -1518,7 +1518,7 @@ public class UIRush extends javax.swing.JFrame {
             }
         });
 
-        jLabel6.setText("Paso");
+        jLabel6.setText("Paso inicial");
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -1838,7 +1838,7 @@ public class UIRush extends javax.swing.JFrame {
         else
             nextButton.setEnabled(true);
         printState(path.get(pathIndex));
-        jLabel6.setText("Paso: #" + pathIndex);
+        jLabel6.setText("Paso #" + pathIndex);
     }//GEN-LAST:event_backButtonMouseClicked
 
     private void nextButtonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_nextButtonMouseClicked

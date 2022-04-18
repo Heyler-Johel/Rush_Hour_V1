@@ -1549,7 +1549,7 @@
         </Component>
         <Component class="javax.swing.JLabel" name="jLabel6">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Paso"/>
+            <Property name="text" type="java.lang.String" value="Paso inicial"/>
           </Properties>
         </Component>
       </SubComponents>
