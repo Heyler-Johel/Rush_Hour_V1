@@ -84,6 +84,7 @@ public class State implements IPrototype<State>{
 		System.out.println(this.toString());
 	}
 	
+        @Override
 	public String toString(){
 		String[][] output = new String[map.gridSize][map.gridSize];
 		for (int i = 0; i < output.length; i++) {

@@ -67,7 +67,9 @@ public class Vehicle implements IPrototype<Vehicle> {
 	
     @Override
     public Vehicle clone(){
-        return new Vehicle(this.x, this.y, this.horizontal, this.size);
+        return new Vehicle(this.id,this.principal,this.esCarro,this.color,
+                           this.posicionX,this.posicionY,this.nombre,
+                           this.horizontal,this.x, this.y);
     }
 
     @Override
