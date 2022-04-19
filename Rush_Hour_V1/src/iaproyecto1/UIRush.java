@@ -12,6 +12,8 @@ import java.util.LinkedList;
 import static javax.swing.JOptionPane.showMessageDialog;
 import javax.swing.JPanel;
 import static iaproyecto1.AStar.searchPath;
+import java.awt.Font;
+import javax.swing.JLabel;
 
 /**
  *
@@ -23,14 +25,18 @@ public class UIRush extends javax.swing.JFrame {
     LinkedList<Vehicle> objectArrayVehiculo = new LinkedList<>();
     LinkedList<State> path = new LinkedList<>();
     int pathIndex = 0;
-    String[] nombreVehiculos={"Principal","Carro 1","Carro 2","Camión 1"};
-    Color[] colores = {Color.red,Color.pink,Color.green,Color.yellow};
+    //String[] nombreVehiculos={"Principal","Carro 1","Carro 2","Camión 1"};
+    //String[] nombreVehiculos={"Principal"};
+    LinkedList<String> nombreVehiculos = new LinkedList<>();
+    Color[] colores = {Color.red,Color.pink,Color.green,Color.yellow,Color.black,Color.orange,Color.magenta,new Color(204,204,204),new Color(153,153,255),new Color(204,153,255),new Color(255,102,153),new Color(255,255,153),new Color(204,255,153),new Color(153,255,153),new Color(153,255,204),new Color(0,153,153),new Color(102,0,102)};
     String posInicial = "";
     String posFinal = "";
     Boolean seleccionando=true;
     Boolean boolPosInicial=true;
     Boolean boolPosFinal=false;
     String posSalida="";
+    int totalCars=1;
+    int totalTrucks=0;
     
 
     
@@ -43,23 +49,25 @@ public class UIRush extends javax.swing.JFrame {
 
     public void getPosicionPanel(java.awt.event.MouseEvent evt, String pos) {
         //System.out.println(pos);
-        if(objectArrayVehiculo.size()<4){
+        if(objectArrayVehiculo.size()<(totalCars+totalTrucks+1)){
             JPanel labelSelect = getLabel(pos);
             labelSelect.setBackground(colores[objectArrayVehiculo.size()]);
+            String wordTypeVehicle="";
+            
             if(boolPosInicial){
                 posInicial=pos;
                 boolPosInicial=false;
                 boolPosFinal=true;
                 //if(objectArrayVehiculo.size()>0){
-                    showMessageDialog(null, "Posicion final del " + nombreVehiculos[objectArrayVehiculo.size()] + ":");
+                    showMessageDialog(null, "Posicion final del " + nombreVehiculos.get(objectArrayVehiculo.size()) + ":");
                 //}
             }
             else{
                posFinal=pos;
                boolPosFinal=false;
                boolPosInicial=true;
-               if(objectArrayVehiculo.size()<3){
-                   showMessageDialog(null, "Posicion inicial del " + nombreVehiculos[objectArrayVehiculo.size()+1] + ":");
+               if(objectArrayVehiculo.size()<(totalCars+totalTrucks)){
+                   showMessageDialog(null, "Posicion inicial del " + nombreVehiculos.get(objectArrayVehiculo.size()+1) + ":");
                }
                else{
                    showMessageDialog(null,"Agregue la salida :");
@@ -76,10 +84,16 @@ public class UIRush extends javax.swing.JFrame {
     }
 
     public void addCar(){
-        System.out.println("Aqui");
         System.out.println(posInicial);
         System.out.println(posFinal);
+        
+
+
         if(!posInicial.equals("") && !posFinal.equals("")){
+            String wordTypeVehicle=nombreVehiculos.get(objectArrayVehiculo.size()).substring(0,3);
+            Boolean isCar=true;
+            System.out.println(wordTypeVehicle);
+
             Boolean horizontal=true;
             String[] posInicialArray = posInicial.split(",");
             String[] posFinalArray = posFinal.split(",");
@@ -88,6 +102,12 @@ public class UIRush extends javax.swing.JFrame {
             }
             int mayorInicial=Integer.parseInt(posInicialArray[0])+Integer.parseInt(posInicialArray[1]);
             int mayorFinal=Integer.parseInt(posFinalArray[0])+Integer.parseInt(posFinalArray[1]);
+            if(wordTypeVehicle.equals("Cam")){
+                isCar=false;
+                String centerPos=getPosCenterTruck(Integer.parseInt(posInicialArray[0]),Integer.parseInt(posInicialArray[1]),Integer.parseInt(posFinalArray[0]),Integer.parseInt(posFinalArray[1]));
+                JPanel labelSelect = getLabel(centerPos);
+                labelSelect.setBackground(colores[objectArrayVehiculo.size()]);
+            }
             int x;
             int y;
             if(mayorInicial>mayorFinal){
@@ -98,13 +118,18 @@ public class UIRush extends javax.swing.JFrame {
                 x=Integer.parseInt(posInicialArray[0]);
                 y=Integer.parseInt(posInicialArray[1]);
             }
-            Vehicle vehiculoObj = new Vehicle(objectArrayVehiculo.size(),true,true,colores[objectArrayVehiculo.size()],posInicial,posFinal,nombreVehiculos[objectArrayVehiculo.size()],horizontal,x,y);   
+            Vehicle vehiculoObj = new Vehicle(objectArrayVehiculo.size(),true,isCar,colores[objectArrayVehiculo.size()],posInicial,posFinal, nombreVehiculos.get(objectArrayVehiculo.size()),horizontal,x,y);   
             objectArrayVehiculo.add(vehiculoObj);
             posInicial="";
             posFinal="";
         }
     }
     
+    private String getPosCenterTruck(int x1,int y1,int x2,int y2){
+        int midX = (x1 + x2)/2;
+        int midY = (y1 + y2)/2;
+        return (Integer.toString(midX)+","+Integer.toString(midY)); 
+   }
     private static void print(LinkedList<State> path) {
         System.out.println("Number of optimal movements = " + (path.size()-1) + "\n");
         int index = 0;
@@ -175,14 +200,78 @@ public class UIRush extends javax.swing.JFrame {
         String[] posSalidaArray = posSalida.split(",");
         int[] goalPoint = {Integer.parseInt(posSalidaArray[0]), Integer.parseInt(posSalidaArray[1])};
         Map map = new Map(6, objectArrayVehiculo, goalPoint);
+        long startTime = System.currentTimeMillis();
         path = searchPath(map);
+        long endTime = System.currentTimeMillis();
+	long timeTaken = endTime - startTime;
+        jLabel2.setText("Total de pasos: "+ (path.size()-1));
+        jLabel3.setText("Tiempo tomado: " + timeTaken + " ms");
         System.out.println("Solution using Heuristic.");
         System.out.println("#########################");
         print(path);
     }
     
     public void addDataManual() {
-        showMessageDialog(null, "Agregue el vehículo principal.");
+        //showMessageDialog(null, "Agregue el vehículo principal222.");
+        
+        JLabel labelNameCarPrincipal=new JLabel("Principal:");
+        labelNameCarPrincipal.setBounds(20, 55, 90, 22);
+        labelNameCarPrincipal.setFont(new Font("Tahoma", Font.PLAIN, 18));
+        jPanelVehiculos.add(labelNameCarPrincipal);
+        
+        JPanel panelPrincipal=new JPanel();
+        panelPrincipal.setBounds(110,55,25,25);
+        panelPrincipal.setBackground(Color.red);
+        jPanelVehiculos.add(panelPrincipal);
+        
+        int valueCars = ((Integer) jSpinnerCar.getValue())-1;
+        totalCars=valueCars;
+        int valueTrucks=  (Integer) jSpinnerTruck.getValue();
+        totalTrucks=valueTrucks;
+        //System.out.println(valueCars);
+        
+        int yPosition=85;
+        int count=1;
+        nombreVehiculos.add("Principal: ");
+        while(valueCars>0){
+            nombreVehiculos.add("Carro: "+count);
+            JLabel labelNameCar=new JLabel("Carro: "+count);
+            labelNameCar.setBounds(20, yPosition, 90, 22);
+            labelNameCar.setFont(new Font("Tahoma", Font.PLAIN, 18));
+            jPanelVehiculos.add(labelNameCar);
+            
+            JPanel panelColor=new JPanel();
+            panelColor.setBounds(110,yPosition,25,25);
+            panelColor.setBackground(colores[count]);
+            jPanelVehiculos.add(panelColor);
+        
+            count++;
+            valueCars--;
+            yPosition+=35;
+        }
+        yPosition=55;
+        int countTruck=1;
+        while(valueTrucks>0){
+            nombreVehiculos.add("Camión: "+countTruck);
+            JLabel labelNameCar=new JLabel("Camión: "+countTruck);
+            labelNameCar.setBounds(350, yPosition, 90, 22);
+            labelNameCar.setFont(new Font("Tahoma", Font.PLAIN, 18));
+            jPanelVehiculos.add(labelNameCar);
+            
+            JPanel panelColor=new JPanel();
+            panelColor.setBounds(440,yPosition,25,25);
+            panelColor.setBackground(colores[count]);
+            jPanelVehiculos.add(panelColor);
+        
+            count++;
+            countTruck++;
+            valueTrucks--;
+            yPosition+=35;
+        }
+//        JPanel panelHab=new JPanel();
+//        panelHab.setBounds(200,200,200,200); 
+//        jPanelVehiculos.add(panelHab); 
+
 //        addCars();
 //        Boolean principal = true;
 //        while(objectArrayVehiculo.length<5){
@@ -281,18 +370,16 @@ public class UIRush extends javax.swing.JFrame {
         salida6 = new javax.swing.JPanel();
         jPanelVehiculos = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
-        jPanelCarroPrincipal = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
-        jPanelCarro1 = new javax.swing.JPanel();
-        jPanelCarro2 = new javax.swing.JPanel();
-        jPanelCamion1 = new javax.swing.JPanel();
-        jButtonAddData = new javax.swing.JButton();
+        jLabel7 = new javax.swing.JLabel();
+        jLabel8 = new javax.swing.JLabel();
+        jSpinnerTruck = new javax.swing.JSpinner();
+        jSpinnerCar = new javax.swing.JSpinner();
         backButton = new javax.swing.JLabel();
         nextButton = new javax.swing.JLabel();
         jLabel6 = new javax.swing.JLabel();
+        jButtonAddData = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jLabel3 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -1358,149 +1445,56 @@ public class UIRush extends javax.swing.JFrame {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jPanelVehiculos.setBackground(new java.awt.Color(102, 153, 255));
+
         jLabel1.setFont(new java.awt.Font("Franklin Gothic Demi Cond", 1, 24)); // NOI18N
         jLabel1.setText("Vehículos");
 
-        jLabel2.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel2.setText("Principal:");
+        jLabel7.setFont(new java.awt.Font("Franklin Gothic Demi Cond", 1, 14)); // NOI18N
+        jLabel7.setText("Camiones:");
 
-        jPanelCarroPrincipal.setBackground(new java.awt.Color(255, 0, 51));
+        jLabel8.setFont(new java.awt.Font("Franklin Gothic Demi Cond", 1, 14)); // NOI18N
+        jLabel8.setText("Carros:");
 
-        javax.swing.GroupLayout jPanelCarroPrincipalLayout = new javax.swing.GroupLayout(jPanelCarroPrincipal);
-        jPanelCarroPrincipal.setLayout(jPanelCarroPrincipalLayout);
-        jPanelCarroPrincipalLayout.setHorizontalGroup(
-            jPanelCarroPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 30, Short.MAX_VALUE)
-        );
-        jPanelCarroPrincipalLayout.setVerticalGroup(
-            jPanelCarroPrincipalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
+        jSpinnerTruck.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jSpinnerTruck.setModel(new javax.swing.SpinnerNumberModel(0, 0, 8, 1));
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel3.setText("Carro 1:");
-
-        jLabel4.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel4.setText("Camión1:");
-
-        jLabel5.setFont(new java.awt.Font("Tahoma", 0, 18)); // NOI18N
-        jLabel5.setText("Carro 2:");
-
-        jPanelCarro1.setBackground(new java.awt.Color(255, 204, 204));
-        jPanelCarro1.setPreferredSize(new java.awt.Dimension(30, 30));
-
-        javax.swing.GroupLayout jPanelCarro1Layout = new javax.swing.GroupLayout(jPanelCarro1);
-        jPanelCarro1.setLayout(jPanelCarro1Layout);
-        jPanelCarro1Layout.setHorizontalGroup(
-            jPanelCarro1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 30, Short.MAX_VALUE)
-        );
-        jPanelCarro1Layout.setVerticalGroup(
-            jPanelCarro1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 30, Short.MAX_VALUE)
-        );
-
-        jPanelCarro2.setBackground(new java.awt.Color(0, 255, 0));
-        jPanelCarro2.setPreferredSize(new java.awt.Dimension(30, 30));
-
-        javax.swing.GroupLayout jPanelCarro2Layout = new javax.swing.GroupLayout(jPanelCarro2);
-        jPanelCarro2.setLayout(jPanelCarro2Layout);
-        jPanelCarro2Layout.setHorizontalGroup(
-            jPanelCarro2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanelCarro2Layout.setVerticalGroup(
-            jPanelCarro2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 30, Short.MAX_VALUE)
-        );
-
-        jPanelCamion1.setBackground(new java.awt.Color(255, 204, 51));
-        jPanelCamion1.setInheritsPopupMenu(true);
-        jPanelCamion1.setPreferredSize(new java.awt.Dimension(30, 30));
-
-        javax.swing.GroupLayout jPanelCamion1Layout = new javax.swing.GroupLayout(jPanelCamion1);
-        jPanelCamion1.setLayout(jPanelCamion1Layout);
-        jPanelCamion1Layout.setHorizontalGroup(
-            jPanelCamion1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-        jPanelCamion1Layout.setVerticalGroup(
-            jPanelCamion1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 30, Short.MAX_VALUE)
-        );
+        jSpinnerCar.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jSpinnerCar.setModel(new javax.swing.SpinnerNumberModel(1, 1, 8, 1));
 
         javax.swing.GroupLayout jPanelVehiculosLayout = new javax.swing.GroupLayout(jPanelVehiculos);
         jPanelVehiculos.setLayout(jPanelVehiculosLayout);
         jPanelVehiculosLayout.setHorizontalGroup(
             jPanelVehiculosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelVehiculosLayout.createSequentialGroup()
-                .addGroup(jPanelVehiculosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanelVehiculosLayout.createSequentialGroup()
-                        .addGap(25, 25, 25)
-                        .addGroup(jPanelVehiculosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanelVehiculosLayout.createSequentialGroup()
-                                .addComponent(jLabel2, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jPanelCarroPrincipal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanelVehiculosLayout.createSequentialGroup()
-                                .addGroup(jPanelVehiculosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel4, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanelVehiculosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jPanelCarro1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jPanelCarro2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jPanelCamion1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
-                    .addGroup(jPanelVehiculosLayout.createSequentialGroup()
-                        .addGap(163, 163, 163)
-                        .addComponent(jLabel1)))
-                .addContainerGap(253, Short.MAX_VALUE))
+                .addGap(34, 34, 34)
+                .addComponent(jLabel8)
+                .addGap(18, 18, 18)
+                .addComponent(jSpinnerCar, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(41, 41, 41)
+                .addComponent(jLabel1)
+                .addGap(35, 35, 35)
+                .addComponent(jLabel7)
+                .addGap(18, 18, 18)
+                .addComponent(jSpinnerTruck, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanelVehiculosLayout.setVerticalGroup(
             jPanelVehiculosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanelVehiculosLayout.createSequentialGroup()
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(jPanelVehiculosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanelCarroPrincipal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel2, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanelVehiculosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelVehiculosLayout.createSequentialGroup()
-                        .addComponent(jPanelCarro1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanelVehiculosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(jPanelVehiculosLayout.createSequentialGroup()
-                        .addComponent(jPanelCarro2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanelVehiculosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanelVehiculosLayout.createSequentialGroup()
-                        .addComponent(jLabel4, javax.swing.GroupLayout.DEFAULT_SIZE, 30, Short.MAX_VALUE)
-                        .addGap(129, 129, 129))
-                    .addGroup(jPanelVehiculosLayout.createSequentialGroup()
-                        .addComponent(jPanelCamion1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addContainerGap()
+                        .addGroup(jPanelVehiculosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanelVehiculosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel8, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jSpinnerCar, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanelVehiculosLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jSpinnerTruck, javax.swing.GroupLayout.PREFERRED_SIZE, 36, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(414, Short.MAX_VALUE))
         );
-
-        jButtonAddData.setBackground(new java.awt.Color(0, 0, 204));
-        jButtonAddData.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jButtonAddData.setForeground(new java.awt.Color(255, 255, 255));
-        jButtonAddData.setText("Colocar Elementos");
-        jButtonAddData.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jButtonAddDataMouseClicked(evt);
-            }
-        });
-        jButtonAddData.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButtonAddDataActionPerformed(evt);
-            }
-        });
 
         backButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/iaproyecto1/back-7.png"))); // NOI18N
         backButton.setEnabled(false);
@@ -1520,6 +1514,25 @@ public class UIRush extends javax.swing.JFrame {
 
         jLabel6.setText("Paso inicial");
 
+        jButtonAddData.setBackground(new java.awt.Color(0, 0, 204));
+        jButtonAddData.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
+        jButtonAddData.setForeground(new java.awt.Color(255, 255, 255));
+        jButtonAddData.setText("Colocar Elementos");
+        jButtonAddData.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jButtonAddDataMouseClicked(evt);
+            }
+        });
+        jButtonAddData.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButtonAddDataActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("Total de Pasos:");
+
+        jLabel3.setText("Tiempo Tomado:");
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -1531,30 +1544,38 @@ public class UIRush extends javax.swing.JFrame {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jPanelVehiculos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(jLabel6)
+                        .addGap(0, 509, Short.MAX_VALUE))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addComponent(backButton)
+                        .addGap(18, 18, 18)
+                        .addComponent(nextButton)
+                        .addGap(18, 18, 18)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButtonAddData)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(backButton)
-                                .addGap(18, 18, 18)
-                                .addComponent(nextButton))
-                            .addComponent(jLabel6))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                            .addComponent(jLabel2)
+                            .addComponent(jLabel3))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jButtonAddData)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(jPanelVehiculos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jPanelVehiculos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(jButtonAddData, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(backButton, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(nextButton, javax.swing.GroupLayout.Alignment.TRAILING))
-                        .addGap(10, 10, 10)
+                            .addComponent(jButtonAddData, javax.swing.GroupLayout.PREFERRED_SIZE, 44, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(jPanel1Layout.createSequentialGroup()
+                                    .addComponent(jLabel2)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jLabel3))
+                                .addComponent(backButton)
+                                .addComponent(nextButton)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel6))
                     .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
@@ -1896,9 +1917,9 @@ public class UIRush extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
+    private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JPanel jPanel00;
     private javax.swing.JPanel jPanel01;
     private javax.swing.JPanel jPanel02;
@@ -1937,11 +1958,9 @@ public class UIRush extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel53;
     private javax.swing.JPanel jPanel54;
     private javax.swing.JPanel jPanel55;
-    private javax.swing.JPanel jPanelCamion1;
-    private javax.swing.JPanel jPanelCarro1;
-    private javax.swing.JPanel jPanelCarro2;
-    private javax.swing.JPanel jPanelCarroPrincipal;
     private javax.swing.JPanel jPanelVehiculos;
+    private javax.swing.JSpinner jSpinnerCar;
+    private javax.swing.JSpinner jSpinnerTruck;
     private javax.swing.JLabel nextButton;
     private javax.swing.JPanel salida0;
     private javax.swing.JPanel salida1;
