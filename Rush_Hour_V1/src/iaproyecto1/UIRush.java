@@ -25,8 +25,6 @@ public class UIRush extends javax.swing.JFrame {
     LinkedList<Vehicle> objectArrayVehiculo = new LinkedList<>();
     LinkedList<State> path = new LinkedList<>();
     int pathIndex = 0;
-    //String[] nombreVehiculos={"Principal","Carro 1","Carro 2","Camión 1"};
-    //String[] nombreVehiculos={"Principal"};
     LinkedList<String> nombreVehiculos = new LinkedList<>();
     Color[] colores = {Color.red,Color.pink,Color.green,Color.yellow,Color.black,Color.orange,Color.magenta,new Color(204,204,204),new Color(153,153,255),new Color(204,153,255),new Color(255,102,153),new Color(255,255,153),new Color(204,255,153),new Color(153,255,153),new Color(153,255,204),new Color(0,153,153),new Color(102,0,102)};
     String posInicial = "";
