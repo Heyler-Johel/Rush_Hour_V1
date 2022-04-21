@@ -1455,10 +1455,10 @@ public class UIRush extends javax.swing.JFrame {
         jLabel8.setText("Carros:");
 
         jSpinnerTruck.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jSpinnerTruck.setModel(new javax.swing.SpinnerNumberModel(0, 0, 8, 1));
+        jSpinnerTruck.setModel(new javax.swing.SpinnerNumberModel(0, 0, null, 1));
 
         jSpinnerCar.setFont(new java.awt.Font("Tahoma", 1, 18)); // NOI18N
-        jSpinnerCar.setModel(new javax.swing.SpinnerNumberModel(1, 1, 8, 1));
+        jSpinnerCar.setModel(new javax.swing.SpinnerNumberModel(1, 1, null, 1));
 
         javax.swing.GroupLayout jPanelVehiculosLayout = new javax.swing.GroupLayout(jPanelVehiculos);
         jPanelVehiculos.setLayout(jPanelVehiculosLayout);
